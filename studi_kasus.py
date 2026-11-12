@@ -1,52 +1,53 @@
-total = 0
-lulus = 0
-remedial = 0
-tidak_lulus = 0
+# Konstanta
+TARGET = 100
+PENANDA = -1
+
+# Inisialisasi variabel awal
+banyak_hari = 0
+total_produksi = 0
+hari_target = 0
 tertinggi = 0
+hari_tertinggi = 0
+terendah = None  # Tidak diisi 0 agar tidak mengganggu pencarian nilai minimum
+hari_terendah = 0
 
-print("=== Program Rekap Nilai Kuis Kelas ===")
-jumlah_mahasiswa = int(input("Masukkan jumlah mahasiswa: "))
+# Baca produksi hari ke-1 sebelum perulangan (Pola Sentinel / Penanda)
+produksi = int(input(f"Produksi hari ke-{banyak_hari + 1} ({PENANDA} untuk selesai): "))
 
-for i in range(jumlah_mahasiswa):
-    print(f"\nMasukkan nilai mahasiswa ke-{i+1}:")
-    nilai = int(input("Masukkan nilai: "))
+while produksi != PENANDA:
+    banyak_hari += 1
+    total_produksi += produksi
 
-    # Perbaikan operator: > 100 (bukan < 100)
-    while nilai < 0 or nilai > 100:
-        print("Nilai tidak valid, masukkan nilai antara 0-100")
-        nilai = int(input("Masukkan nilai kembali: "))
+    # Hitung hari mencapai target
+    if produksi >= TARGET:
+        hari_target += 1
 
-    # Percabangan bertingkat
-    if nilai >= 60:
-        if nilai >= 85:
-            kategori = "Lulus dengan nilai bagus"
-        else:
-            kategori = "Lulus dengan nilai cukup" 
-        lulus += 1
+    # Memperbarui nilai tertinggi dan terendah dan harinya
+    if banyak_hari == 1:
+        tertinggi = produksi
+        hari_tertinggi = banyak_hari
+        terendah = produksi
+        hari_terendah = banyak_hari
     else:
-        if nilai >= 40:
-            kategori = "Remedial"
-            remedial += 1 
-        else:
-            kategori = "Tidak lulus"
-            tidak_lulus += 1
+        if produksi > tertinggi:
+            tertinggi = produksi
+            hari_tertinggi = banyak_hari
+        if produksi < terendah:
+            terendah = produksi
+            hari_terendah = banyak_hari
 
-    print("Kategori :", kategori)
+    # Baca produksi hari berikutnya di akhir blok while
+    produksi = int(input(f"Produksi hari ke-{banyak_hari + 1} ({PENANDA} untuk selesai): "))
 
-    # Akumulasi total dan pengecekan nilai tertinggi
-    total += nilai
-    if nilai > tertinggi:
-        tertinggi = nilai
-
-# Perhitungan rata-rata dilakukan setelah perulangan 'for' selesai
-if jumlah_mahasiswa > 0:
-    rata_rata = total / jumlah_mahasiswa
+# Output Rekap Produksi
+print("=== REKAP PRODUKSI ===")
+if banyak_hari == 0:
+    print("Belum ada data produksi.")
 else:
-    rata_rata = 0
-
-print("==== REKAP KUIS ====")
-print("Rata-rata  :", rata_rata)
-print("Tertinggi  :", tertinggi)
-print("Lulus      :", lulus)
-print("Remedial   :", remedial)
-print("Tidak Lulus:", tidak_lulus)
+    rata_rata = total_produksi / banyak_hari
+    print(f"Banyak hari : {banyak_hari}")
+    print(f"Total produksi : {total_produksi}")
+    print(f"Rata-rata per hari: {rata_rata:.2f}")
+    print(f"Hari mencapai target ({TARGET}): {hari_target}")
+    print(f"Tertinggi: {tertinggi} unit (hari ke-{hari_tertinggi})")
+    print(f"Terendah : {terendah} unit (hari ke-{hari_terendah})")
